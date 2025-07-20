@@ -5,12 +5,15 @@ import com.dev.springboot.bootcamp01.springbootmvc.repositories.Employeereposito
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
 
 import com.dev.springboot.bootcamp01.springbootmvc.dtos.EmployeeDto;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,4 +51,30 @@ public class EmployeeServiceImpl implements EmployeeService{
             employeerepository.deleteById(id);
         }
     }
+
+    @Override
+    public EmployeeDto putEmployee(Long id, EmployeeDto employeeDto) {
+        EmployeeEntity employeeEntity = modelMapper.map(employeeDto,EmployeeEntity.class);
+        employeeEntity.setId(id);
+        EmployeeEntity savedEmployee = employeerepository.save(employeeEntity);
+        return modelMapper.map(savedEmployee,EmployeeDto.class);
+    }
+
+    @Override
+    public EmployeeDto patchEmployee(Long id, Map<String, Object> updates) {
+        boolean ifExistsById = employeerepository.existsById(id);
+        if(!ifExistsById) return null;
+        EmployeeEntity employeeEntity = employeerepository.findById(id).get();
+        updates.forEach((field,value)->{
+            Field fieldToBeUpdated = ReflectionUtils.findField(EmployeeEntity.class,field);
+            fieldToBeUpdated.setAccessible(true);
+            ReflectionUtils.setField(fieldToBeUpdated,employeeEntity,value);
+            
+        });
+        
+        EmployeeEntity patchedEmployee = employeerepository.save(employeeEntity);
+        return modelMapper.map(patchedEmployee,EmployeeDto.class);
+    }
+
+
 }
