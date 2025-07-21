@@ -2,6 +2,7 @@ package com.dev.springboot.bootcamp01.springbootmvc.controllers;
 
 import com.dev.springboot.bootcamp01.springbootmvc.dtos.EmployeeDto;
 import com.dev.springboot.bootcamp01.springbootmvc.service.EmployeeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class EmployeeController
     }
 
     @PostMapping("/save")
-    public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeDto employeeDto){
+    public ResponseEntity<EmployeeDto> saveEmployee(@Valid @RequestBody EmployeeDto employeeDto){
         return ResponseEntity.ok(employeeService.saveEmployee(employeeDto));
     }
     @GetMapping("getById/{id}")
