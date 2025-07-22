@@ -25,14 +25,14 @@ public class EmployeeServiceImpl implements EmployeeService{
     public List<EmployeeDto> getAllEmployees() {
         List<EmployeeEntity> listOfEmployees = employeerepository.findAll();
         return listOfEmployees.stream()
-                .map(employee->modelMapper.map(listOfEmployees,EmployeeDto.class)).toList();
+                .map(employee->modelMapper.map(employee,EmployeeDto.class)).toList();
     }
 
     @Override
     public EmployeeDto getEmployeeById(Long id) {
-        Optional<EmployeeEntity> employeeEntity = employeerepository.findById(id);
-        if(employeeEntity!=null){
-            EmployeeDto employeeDto = modelMapper.map(employeeEntity,EmployeeDto.class);
+        Optional<EmployeeEntity> employeeOptional = employeerepository.findById(id);
+        if(employeeOptional.isPresent()){
+            EmployeeDto employeeDto = modelMapper.map(employeeOptional.get(),EmployeeDto.class);
             return employeeDto;
         }
         return null;
@@ -46,8 +46,8 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public void deleteEmployeeById(Long id) {
-        Optional<EmployeeEntity> empl = employeerepository.findById(id);
-        if(empl!=null){
+        Optional<EmployeeEntity> emplOptional = employeerepository.findById(id);
+        if(emplOptional.isPresent()){
             employeerepository.deleteById(id);
         }
     }
@@ -74,6 +74,17 @@ public class EmployeeServiceImpl implements EmployeeService{
         
         EmployeeEntity patchedEmployee = employeerepository.save(employeeEntity);
         return modelMapper.map(patchedEmployee,EmployeeDto.class);
+    }
+
+    @Override
+    public EmployeeDto findEmployeeByEmail(String email) {
+        Optional<EmployeeEntity> employeeOptional = employeerepository.findEmployeeByEmail(email);
+        if(employeeOptional.isPresent()){
+            return modelMapper.map(employeeOptional.get(),EmployeeDto.class);
+        }
+        else{
+            throw new RuntimeException("Employee does not exist with this email");
+        }
     }
 
 

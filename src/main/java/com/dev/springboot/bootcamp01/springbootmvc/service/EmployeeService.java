@@ -15,4 +15,5 @@ public interface EmployeeService {
     EmployeeDto putEmployee(Long id, EmployeeDto employeeDto);
 
     EmployeeDto patchEmployee(Long id, Map<String,Object> updates);
+    EmployeeDto findEmployeeByEmail(String email);
 }
