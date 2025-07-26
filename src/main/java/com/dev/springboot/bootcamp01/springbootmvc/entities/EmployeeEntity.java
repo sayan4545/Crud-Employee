@@ -17,4 +17,6 @@ public class EmployeeEntity {
     private LocalDate doj;
     private String email;
     private Boolean isActive;
+
+    private String role;
 }

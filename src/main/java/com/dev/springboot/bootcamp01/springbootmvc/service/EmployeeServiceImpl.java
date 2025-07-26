@@ -1,6 +1,7 @@
 package com.dev.springboot.bootcamp01.springbootmvc.service;
 
 import com.dev.springboot.bootcamp01.springbootmvc.entities.EmployeeEntity;
+import com.dev.springboot.bootcamp01.springbootmvc.exceptions.ResourceNotFoundException;
 import com.dev.springboot.bootcamp01.springbootmvc.repositories.Employeerepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,8 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public EmployeeDto putEmployee(Long id, EmployeeDto employeeDto) {
+        boolean ifExists = employeerepository.existsById(id);
+        if(!ifExists) throw new ResourceNotFoundException("Employee not aailable with {id}");
         EmployeeEntity employeeEntity = modelMapper.map(employeeDto,EmployeeEntity.class);
         employeeEntity.setId(id);
         EmployeeEntity savedEmployee = employeerepository.save(employeeEntity);

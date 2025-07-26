@@ -4,11 +4,15 @@ import com.dev.springboot.bootcamp01.springbootmvc.dtos.EmployeeDto;
 import com.dev.springboot.bootcamp01.springbootmvc.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -27,8 +31,15 @@ public class EmployeeController
     }
     @GetMapping("getById/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id){
-        return ResponseEntity.ok(employeeService.getEmployeeById(id));
+        //return ResponseEntity.ok(employeeService.getEmployeeById(id));
+        if(employeeService.getEmployeeById(id)!=null){
+            return new ResponseEntity<>(employeeService.getEmployeeById(id),HttpStatus.FOUND);
+        }else{
+            throw new NoSuchElementException("No resource found with id ");
+        }
     }
+
+
 
     @DeleteMapping("/deleteById/{id}")
     public void deleteById(@PathVariable Long id){
@@ -42,5 +53,9 @@ public class EmployeeController
     @PatchMapping("/patch/{id}")
     public ResponseEntity<EmployeeDto> patchEmployee(@PathVariable Long id, Map<String,Object> updates){
         return ResponseEntity.ok(employeeService.patchEmployee(id,updates));
+    }
+    @GetMapping("/getByEmail")
+    public ResponseEntity<EmployeeDto> getByEmail(@RequestParam String email){
+        return ResponseEntity.ok(employeeService.findEmployeeByEmail(email));
     }
 }

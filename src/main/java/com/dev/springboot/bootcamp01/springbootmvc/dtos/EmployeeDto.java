@@ -1,5 +1,6 @@
 package com.dev.springboot.bootcamp01.springbootmvc.dtos;
 
+import com.dev.springboot.bootcamp01.springbootmvc.annotations.EmployeeValidator;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +23,13 @@ public class EmployeeDto {
     private Integer age;
     private LocalDate doj;
     @Email(message = "Enter a valid email")
+    @NotBlank
     private String email;
+
     private Boolean isActive;
+
+    @NotBlank
+    //@Pattern(regexp = "^(ADMIN|USER)$",message = "either ADMIN or USER")
+    @EmployeeValidator
+    private String role;
 }
